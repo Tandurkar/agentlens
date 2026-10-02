@@ -215,19 +215,10 @@ export default function App() {
               Parsed {trace.eventCount.toLocaleString()} JSON lines, but none matched the AgentLens trace
               format — this file speaks a different dialect.
             </p>
-            {state.name?.match(/^[0-9a-f-]{36}\.jsonl$/) ? (
-              <p className="privacy">
-                This looks like a Claude Code session file. Convert it first, then open the converted copy:
-              </p>
-            ) : (
-              <p className="privacy">
-                If this is a Claude Code session file, convert it first, then open the converted copy:
-              </p>
-            )}
-            <pre className="code" style={{ textAlign: 'left' }}>
-              node scripts/convert-claude-code.mjs{' '}
-              {state.name?.match(/^[0-9a-f-]{36}\.jsonl$/) ? `~/.claude/projects/*/${state.name}` : '<that-file>'}
-            </pre>
+            <p className="privacy">
+              AgentLens opens its own trace format (see the README) and raw Claude Code session files
+              directly. This file is neither.
+            </p>
             <div className="landing-actions" style={{ marginTop: 20 }}>
               <button type="button" className="btn" onClick={() => fileInputRef.current?.click()}>
                 Open another file
