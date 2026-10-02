@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTrace } from './parse/useTrace';
 import type { TraceItem } from './types';
 import { fmtCost, fmtDuration, fmtTokens, indexForTs } from './state/replay';
+import { Outline } from './components/Outline';
 import { Transcript } from './components/Transcript';
 import { Timeline } from './components/Timeline';
 import { Inspector } from './components/Inspector';
@@ -24,6 +25,17 @@ export default function App() {
   const [followSignal, setFollowSignal] = useState(0);
   const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [outlineOpen, setOutlineOpen] = useState(true);
+  const chapters = useMemo(() => trace?.items.filter((i) => i.kind === 'user') ?? [], [trace]);
+  const currentChapterId = useMemo(() => {
+    let id: string | null = null;
+    for (const chapter of chapters) {
+      if (chapter.startIndex < scrub) id = chapter.id;
+      else break;
+    }
+    return id;
+  }, [chapters, scrub]);
 
   const itemsById = useMemo(() => {
     const map = new Map<string, TraceItem>();
@@ -140,6 +152,15 @@ export default function App() {
           </span>
         )}
         <span className="topbar-actions">
+          {trace && chapters.length > 1 && (
+            <button
+              type="button"
+              className={outlineOpen ? 'btn btn-on' : 'btn'}
+              onClick={() => setOutlineOpen((v) => !v)}
+            >
+              Outline
+            </button>
+          )}
           <select
             className="sample-select"
             value=""
@@ -231,6 +252,14 @@ export default function App() {
       {trace && trace.items.length > 0 && (
         <>
           <main className="main">
+            {outlineOpen && chapters.length > 1 && (
+              <Outline
+                chapters={chapters}
+                tsStart={trace.tsStart}
+                currentId={currentChapterId}
+                onJump={(item) => moveScrub(Math.min(trace.eventCount, item.endIndex + 1))}
+              />
+            )}
             <Transcript
               trace={trace}
               scrub={scrub}

@@ -239,6 +239,91 @@ select:focus-visible {
   min-height: 0;
 }
 
+/* ---------- outline ---------- */
+.outline {
+  width: 252px;
+  min-width: 212px;
+  border-right: 1px solid var(--line);
+  background: var(--panel-2);
+  overflow-y: auto;
+  padding: 12px 0;
+}
+
+.outline-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 8px;
+  padding: 0 14px;
+}
+
+.outline-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.outline-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 14px;
+  border-left: 2px solid transparent;
+}
+
+.outline-row:hover {
+  background: var(--panel);
+}
+
+.outline-row.active {
+  border-left-color: var(--accent);
+  background: var(--panel);
+}
+
+.outline-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  padding-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.outline-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.outline-text {
+  font-size: 12.5px;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.outline-time {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+@media (max-width: 880px) {
+  .outline {
+    display: none;
+  }
+}
+
+.btn-on {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* ---------- transcript rows ---------- */
 .row {
   padding: 6px 18px;
@@ -416,6 +501,19 @@ select:focus-visible {
 
 .tool-input {
   color: var(--muted);
+}
+
+.tool-summary {
+  color: var(--text);
+}
+
+.tool-summary-line {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--text);
+  background: var(--accent-softbg, transparent);
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
 }
 
 .tool-result {

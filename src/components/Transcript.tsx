@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Trace, TraceItem } from '../types';
 import { fmtDuration, textAt, visibleItemCount } from '../state/replay';
+import { prettyToolName, toolSummary } from '../parse/toolSummary';
 import { VirtualList, type VirtualListHandle } from './VirtualList';
 
 interface TranscriptProps {
@@ -101,6 +102,7 @@ export function Transcript({ trace, scrub, selectedId, onSelect, followSignal }:
       }
       case 'tool': {
         const input = textAt(item, scrub);
+        const summary = toolSummary(item.toolName ?? '', input);
         const resultVisible = item.resultIndex !== undefined && item.resultIndex < scrub;
         const status = resultVisible ? (item.result!.ok ? 'ok' : 'fail') : 'running';
         return (
@@ -111,13 +113,19 @@ export function Transcript({ trace, scrub, selectedId, onSelect, followSignal }:
               onClick={() => onSelect(item)}
             >
               <span className="tool-head">
-                <span className="tool-name">⚙ {item.toolName}</span>
+                <span className="tool-name">⚙ {prettyToolName(item.toolName ?? '')}</span>
                 <span className={`badge badge-${status}`}>
                   {status === 'running' ? 'running…' : status === 'ok' ? 'ok' : 'failed'}
                 </span>
                 {resultVisible && <span className="tool-dur">{fmtDuration(item.result!.durationMs)}</span>}
               </span>
-              {input && <span className="tool-input">{input.length > 180 ? `${input.slice(0, 180)}…` : input}</span>}
+              {summary ? (
+                <span className="tool-input tool-summary">
+                  {summary.length > 180 ? `${summary.slice(0, 180)}…` : summary}
+                </span>
+              ) : (
+                input && <span className="tool-input">{input.length > 180 ? `${input.slice(0, 180)}…` : input}</span>
+              )}
               {resultVisible && (
                 <span className="tool-result">
                   {item.result!.content.length > 220

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Trace, TraceItem } from '../types';
 import { fmtCost, fmtDuration, fmtOffset, fmtTokens } from '../state/replay';
+import { prettyToolName, toolSummary } from '../parse/toolSummary';
 
 interface InspectorProps {
   trace: Trace;
@@ -97,7 +98,7 @@ export function Inspector({ trace, item }: InspectorProps) {
   return (
     <div className="inspector">
       <h2 className="panel-title">
-        {item.kind === 'tool' ? `⚙ ${item.toolName}` : item.kind}
+        {item.kind === 'tool' ? `⚙ ${prettyToolName(item.toolName ?? '')}` : item.kind}
         {item.kind === 'tool' && item.result && (
           <span className={`badge badge-${item.result.ok ? 'ok' : 'fail'}`}>
             {item.result.ok ? 'ok' : 'failed'}
@@ -130,6 +131,9 @@ export function Inspector({ trace, item }: InspectorProps) {
       </dl>
       {item.kind === 'tool' ? (
         <>
+          {toolSummary(item.toolName ?? '', item.text) && (
+            <p className="tool-summary-line">{toolSummary(item.toolName ?? '', item.text)}</p>
+          )}
           <h3 className="panel-sub">input</h3>
           <ClampedPre className="code" text={prettyJson(item.text)} />
           {item.result && (

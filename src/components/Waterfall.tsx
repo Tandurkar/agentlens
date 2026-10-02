@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { Trace, TraceItem } from '../types';
 import { fmtDuration } from '../state/replay';
+import { prettyToolName, toolSummary } from '../parse/toolSummary';
 
 interface WaterfallProps {
   trace: Trace;
@@ -44,8 +45,9 @@ export function Waterfall({ trace, selectedId, onSelect }: WaterfallProps) {
             key={item.id}
             className={`wf-row${item.id === selectedId ? ' selected' : ''}`}
             onClick={() => onSelect(item)}
+            title={toolSummary(item.toolName ?? '', item.text) ?? undefined}
           >
-            <span className="wf-name">{item.toolName}</span>
+            <span className="wf-name">{prettyToolName(item.toolName ?? '')}</span>
             <span className="wf-bar-track">
               <span
                 className={`wf-bar${item.result!.ok ? '' : ' wf-bar-fail'}`}
