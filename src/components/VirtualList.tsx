@@ -91,7 +91,9 @@ export const VirtualList = forwardRef<VirtualListHandle, VirtualListProps>(funct
       heights.current.set(index, height);
       if (!bumpScheduled.current) {
         bumpScheduled.current = true;
-        requestAnimationFrame(() => {
+        // Microtask, not rAF: rAF is throttled in background/embedded tabs,
+        // which would stall layout correction for seconds.
+        queueMicrotask(() => {
           bumpScheduled.current = false;
           setVersion((v) => v + 1);
         });

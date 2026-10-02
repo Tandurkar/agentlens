@@ -207,7 +207,37 @@ export default function App() {
         </main>
       )}
 
-      {trace && (
+      {trace && trace.items.length === 0 && (
+        <main className="landing">
+          <div className="landing-card">
+            <h1>Nothing to replay</h1>
+            <p className="tagline">
+              Parsed {trace.eventCount.toLocaleString()} JSON lines, but none matched the AgentLens trace
+              format — this file speaks a different dialect.
+            </p>
+            {state.name?.match(/^[0-9a-f-]{36}\.jsonl$/) ? (
+              <p className="privacy">
+                This looks like a Claude Code session file. Convert it first, then open the converted copy:
+              </p>
+            ) : (
+              <p className="privacy">
+                If this is a Claude Code session file, convert it first, then open the converted copy:
+              </p>
+            )}
+            <pre className="code" style={{ textAlign: 'left' }}>
+              node scripts/convert-claude-code.mjs{' '}
+              {state.name?.match(/^[0-9a-f-]{36}\.jsonl$/) ? `~/.claude/projects/*/${state.name}` : '<that-file>'}
+            </pre>
+            <div className="landing-actions" style={{ marginTop: 20 }}>
+              <button type="button" className="btn" onClick={() => fileInputRef.current?.click()}>
+                Open another file
+              </button>
+            </div>
+          </div>
+        </main>
+      )}
+
+      {trace && trace.items.length > 0 && (
         <>
           <main className="main">
             <Transcript

@@ -25,6 +25,17 @@ pnpm dev      # open http://localhost:5173 and click "Load the sample trace"
 
 Or drop any `.jsonl` trace in the AgentLens format (below) onto the page.
 
+### Replay your own Claude Code sessions
+
+Claude Code already records every session as JSONL under `~/.claude/projects/`. Convert one into an AgentLens trace:
+
+```bash
+pnpm convert --latest                      # newest session on this machine
+pnpm convert path/to/<session-id>.jsonl    # or a specific one
+```
+
+The converted trace lands in `local/` (gitignored — converted sessions contain your real data; never commit them). Open it via **Open trace** or drag it onto the page. Idle gaps longer than 60s are collapsed to 60s so the timeline shows the work, not the waiting (`--max-gap off` keeps real wall-clock time). Subagent sidechains are skipped for now.
+
 The bundled sample is a realistic session of a coding agent chasing a floating-point rounding bug — reads, greps, edits, a failing test run, an API error with retry, and a green finish. Generate a stress-test trace with `node scripts/generate-sample.mjs --repeat 250 --out public/samples/big.jsonl` (~103k events, ~7 MB).
 
 ## Trace format (v0)
@@ -57,6 +68,7 @@ Measured on the 103,217-event / 7.2 MB stress trace (Apple Silicon MacBook, Chro
 
 ## Roadmap
 
+- [x] Claude Code session converter (`pnpm convert --latest`)
 - [ ] Scroll-while-parsing: render the transcript incrementally during load
 - [ ] `npx agentlens trace.jsonl` — local viewer CLI
 - [ ] Recorder shim: wrap the Anthropic SDK and capture traces from any Node agent

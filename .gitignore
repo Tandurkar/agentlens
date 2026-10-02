@@ -3,3 +3,5 @@ dist/
 *.local
 .DS_Store
 public/samples/big.jsonl
+public/samples/_*
+local/
